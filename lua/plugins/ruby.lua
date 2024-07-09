@@ -12,7 +12,7 @@ return {
     "williamboman/mason.nvim",
     opts = function(_, opts)
       vim.list_extend(opts.ensure_installed, {
-        "solargraph",
+        "ruby-lsp",
         "rubocop",
       })
     end,
@@ -22,10 +22,10 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        solargraph = {
-          root_dir = function(fname)
-            return require("lspconfig").util.root_pattern("Gemfile", ".git")(fname) or vim.fn.getcwd()
-          end,
+        ruby_lsp = {
+          settings = {
+            rails = true, -- This enables ruby-lsp-rails
+          },
         },
       },
     },
