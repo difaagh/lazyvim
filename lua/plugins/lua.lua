@@ -7,5 +7,6 @@ return {
           mason = false,
         },
       },
-    },},
+    },
+  },
 }
