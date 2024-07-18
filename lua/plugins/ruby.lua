@@ -1,3 +1,35 @@
+local ruby_version = vim.fn.system("ruby -v"):match("(%d+%.%d+%.%d+)")
+local ruby_minimal_version = "3.0.0"
+local solargraph = {}
+local rubocop = {}
+
+-- only override necessary settings
+if ruby_version then
+  -- use solargraph and rubocop system
+  if ruby_version <= ruby_minimal_version then
+    solargraph = {
+      mason = false,
+      formatting = false,
+    }
+    -- old ruby version typically doesn't support higher rubocop version for example
+    -- ruby version 2.6.10 use rubocop 1.15.0 version. this version is not support --lsp or --server argument
+    -- use rubocop cmd without the argument
+    rubocop = {
+      mason = false,
+      cmd = { "rubocop" },
+    }
+    -- solargraph and rubocop use mason installation
+  else
+    solargraph = {
+      mason = true,
+      formatting = false,
+    }
+    rubocop = {
+      mason = true,
+    }
+  end
+end
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",
@@ -9,24 +41,11 @@ return {
   },
 
   {
-    "williamboman/mason.nvim",
-    opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, {
-        "ruby-lsp",
-        "rubocop",
-      })
-    end,
-  },
-
-  {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        ruby_lsp = {
-          settings = {
-            rails = true, -- This enables ruby-lsp-rails
-          },
-        },
+        rubocop = rubocop,
+        solargraph = solargraph,
       },
     },
   },
@@ -34,30 +53,5 @@ return {
   {
     "RRethy/nvim-treesitter-endwise",
     event = "InsertEnter",
-  },
-  -- auto format
-  "stevearc/conform.nvim",
-  opts = {
-    formatters_by_ft = {
-      ruby = { "rubocop" },
-    },
-    formatters = {
-      rubocop = function()
-        return {
-          command = "rubocop",
-          args = {
-            "--server",
-            "--fix-layout",
-            "--autocorrect-all",
-            "--format",
-            "files",
-            "--stderr",
-            "--stdin",
-            "$FILENAME",
-          },
-          stdin = true,
-        }
-      end,
-    },
   },
 }
