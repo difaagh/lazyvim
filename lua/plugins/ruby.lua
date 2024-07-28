@@ -44,16 +44,18 @@ return {
         rubocop = rubocop,
         solargraph = {
           mason = false,
+          debug_level = error,
           formatting = false,
+          root_dir = function()
+            return vim.loop.cwd()
+          end,
         },
         sorbet = {
-          -- use sorbet local package
-          -- TODO: check wether need to use global or local package
-          cmd = { "bundle", "exec", "srb", "tc", "--lsp", "--typed=true" },
-          mason = false,
+          cmd = { "srb", "tc", "--lsp", "--typed=true", "--cache-dir=.sorbet-cache" },
           root_dir = function(in_current_path)
             return require("lspconfig.util").root_pattern("Gemfile")(in_current_path)
           end,
+          mason = false,
         },
       },
     },
