@@ -51,10 +51,7 @@ return {
           end,
         },
         sorbet = {
-          cmd = { "srb", "tc", "--lsp", "--typed=true", "--cache-dir=.sorbet-cache" },
-          root_dir = function(in_current_path)
-            return require("lspconfig.util").root_pattern("Gemfile")(in_current_path)
-          end,
+          cmd = { "srb", "tc", "--lsp", "--typed=true" },
           mason = false,
         },
       },
